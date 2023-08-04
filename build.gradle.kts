@@ -22,6 +22,7 @@ dependencies {
 	implementation("io.springfox:springfox-boot-starter:3.0.0")
 	implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("javax.servlet:javax.servlet-api:4.0.1")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.springframework.data:spring-data-jpa:3.1.1")
@@ -30,6 +31,9 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("io.mockk:mockk:1.13.4")
+    testImplementation("org.assertj:assertj-core:3.21.0")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
 }
 
 tasks.withType<KotlinCompile> {

@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.*
 class UrlController(private val urlService: UrlService) {
 
     @PostMapping("/shorten")
-    @ApiOperation("Shorten a URL")
+    @ApiOperation("Shorten a URL",
+        notes = "Shortens a long URL into a shorter version",
+        response = UrlShortenResponse::class)
     fun shortenUrl(@RequestBody @Valid request: UrlShortenRequest): UrlShortenResponse {
         val url = urlService.shortenUrl(request.originalUrl)
         return UrlShortenResponse(url.shortUrl)
@@ -32,6 +34,7 @@ class UrlController(private val urlService: UrlService) {
     fun redirectToOriginalUrl(@PathVariable shortUrl: String): ResponseEntity<Any> {
         val originalUrl = urlService.getOriginalUrl(shortUrl)
         return if (originalUrl != null){
+            urlService.registerUrlAccess(shortUrl)
             ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, originalUrl).build()
         } else {
             ResponseEntity.notFound().build()
@@ -39,7 +42,9 @@ class UrlController(private val urlService: UrlService) {
     }
 
     @GetMapping("/statistics")
-    @ApiOperation("Shows how many times the shorten URL has used")
+    @ApiOperation("Shows how many times the shorten URL has been accessed",
+        notes = "Retrieves statistics for the number of times each shortened URL has been accessed",
+        response = Page::class)
     fun getStatistics(@RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "10") size: Int): ResponseEntity<Page<Url>> {
         val urls = urlService.getStatistics(page = 0, size = 10)
         return ResponseEntity.ok(urls)
